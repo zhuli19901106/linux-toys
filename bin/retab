@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ $# -ge 1 ]; then
+    echo -en "\033]0;$1\a"
+else
+    exit 1
+fi

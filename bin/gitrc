@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+    git status
+else
+    f=$1
+    vi $f && git add $f && git status
+fi

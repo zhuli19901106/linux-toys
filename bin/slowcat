@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+opt = OptionParser.new
+opts = {}
+
+opt.on('-s [second]') {|v| opts[:s] = v.to_f}
+opt.on('-n [number]') {|v| opts[:n] = v.to_i}
+opt.parse!(ARGV)
+
+sleep_time = opts[:s] || 1; # sec
+number = opts[:n] || 100;
+
+ARGV.each do |file|
+  File.open(file) do |f|
+    i = 0
+    f.each do |line|
+      if i < number
+        puts line
+        i += 1
+      else
+        sleep sleep_time
+        i = 0
+      end
+    end
+  end
+end

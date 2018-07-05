@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+
+arg="${@}"
+for (( i=0; i < ${#arg}; i+=1 )) ; do
+    echo -n "${arg:$i:1}"
+    sleep 0.05
+done

@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+reset
+while true; do
+    f=`fortune`
+    word_count=`echo "$f" | wc -w`
+    slowecho "$f" | lolcat
+    echo -e "\n\n"
+    sleep_time=`echo "$word_count / 2" | bc -l`
+    sleep $sleep_time
+done

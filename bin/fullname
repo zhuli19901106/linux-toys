@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+if [ $# -lt 1 ]; then
+    exit
+fi
+echo `readlink -f $1`

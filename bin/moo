@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+while true; do
+    clear
+    f=`fortune`
+    word_count=`echo "$f" | wc -w`
+    reset && echo "$f" | cowsay | lolcat
+    sleep_time=`echo "$word_count / 1.5" | bc -l`
+    printf "Waiting for %.3fs.\n" $sleep_time | lolcat
+    sleep $sleep_time
+done

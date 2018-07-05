@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+
+if [ $# -lt 1 ]; then
+    exit
+fi
+
+for pattern in $@; do
+    jobs=`kubectl get jobs | awk -F " " '{print $1}' | grep "$pattern"`
+    echo $jobs
+    read -p "Remove the above jobs? " -n 1 -r
+    echo ""
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        continue
+    fi
+    for job in $jobs; do
+        kubectl delete jobs $job
+    done
+done
