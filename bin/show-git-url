@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+if [[ $# < 1 ]]; then
+    echo 'Please specify at least one repo name.'
+    exit
+fi
+
+for repo in $@; do
+    if [[ (! -d $repo) || (! -f $repo/.git/config) ]]; then
+        echo "# $repo is not a valid git repo."
+        continue
+    fi
+    echo "# $repo"
+    url=$(grep -oP -m 1 "url = \K[^\s]+" ${repo}/.git/config)
+    branch=$(grep -oP -m 1 "\[branch \"\K([^\"]+)" ${repo}/.git/config)
+    echo "git clone $url $branch"
+done
