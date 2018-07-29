@@ -1,21 +1,29 @@
 #!/usr/bin/bash
 
-ln_opts='-s'
-cp_opts='-rn'
+CP_OVERWRTIE=false
+
 for arg in $@; do
     if [[ $arg == '-f' ]]; then
-        ln_opts='-sf'
-        cp_opts='-rf'
+        CP_OVERWRITE=true
     fi
 done
 
 cur_dir=`readlink -f $0`
 cur_dir=`dirname $cur_dir`
+
 cd $cur_dir
-ln $ln_opts `readlink -f bin` -t ~/
+if [[ $CP_OVERWRITE == true ]]; then
+    rm -rf ~/bin
+fi
+echo "Copying conf file \"bin\" to \"~/bin\""
+cp -r bin ~/bin
+
 cd dot-conf
 for f in `ls`; do
     echo "Copying conf file \"$f\" to \"~/.$f\""
+    if [[ $CP_OVERWRITE == true ]]; then
+        rm -rf ~/.${f}
+    fi
     cp $cp_opts $f ~/.${f}
 done
 cd ..

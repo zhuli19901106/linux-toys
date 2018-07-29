@@ -1,4 +1,3 @@
-# zhuli@4paradigm.com BEGIN
 source /opt/rh/devtoolset-7/enable
 export JDK_HOME=/usr/lib/jvm/jdk1.8.0_171
 export JRE_HOME=$JDK_HOME/jre
@@ -30,47 +29,17 @@ export PATH=$SCALA_HOME/bin:$PATH
 export MAVEN_HOME=/usr/local/maven-3.5.4
 export PATH=$MAVEN_HOME/bin:$PATH
 
-# Set up envs for PWS.
-export OPERATORS_HOME=/home/zhuli/op
-export TRIGGERS_HOME=$OPERATORS_HOME
-#export ACTIVE_PROFILE=dev
-
 alias l='ls -l'
 alias la='ls -a'
-alias cls='clear'
-alias cs=cls
 alias no='yes n'
-alias python3=python3.6
-stty -ixon
-
-function hello() {
-    echo 'Hello world.'
-}
-
-alias vo=view
-alias clare=clear
-alias claer=clear
-alias clera=clear
-alias clea=clear
+alias cls=clear
 alias sl=ls
-alias md=mkdir
-
-alias bzb='bazel build'
-alias bzc='bazel clean'
+stty -ixon
 
 alias pyzl="source /home/zhuli/zhuli_python/bin/activate"
 
 alias v=vi
 alias h=history
-alias df='df -h'
-alias rp=repeat
-alias lslib='ls *.so *.a'
-
-alias kbc=kubectl
-alias kbcd='kubectl describe'
-alias kbcg='kubectl get'
-alias kbcl='kubectl logs'
-alias kbcrm='kubectl delete'
 
 alias mvn-package='mvn package -DskipTests -Dwagon.skip=true'
 alias mvn-install='mvn install -DskipTests -Dwagon.skip=true'
@@ -106,18 +75,3 @@ fd()
         vi $f[@]
     fi
 }
-
-bb()
-{
-    if [ $# -ne 1 ]; then
-        cd ..
-        return
-    fi
-    n=$1
-    for i in {1..$n}; do
-        cd ..
-    done
-}
-
-# zhuli@4paradigm.com END
-
