@@ -6,12 +6,14 @@ if [[ $# < 1 ]]; then
 fi
 
 for repo in $@; do
-    if [[ (! -d $repo) || (! -f $repo/.git/config) ]]; then
+    if [[ (! -d $repo) || (! -d $repo/.git) ]]; then
         echo "# $repo is not a valid git repo."
         continue
     fi
     echo "# $repo"
-    url=$(grep -oP -m 1 "url = \K[^\s]+" ${repo}/.git/config)
-    branch=$(grep -oP -m 1 "\[branch \"\K([^\"]+)" ${repo}/.git/config)
+    cd $repo
+    url=`git config --get remote.origin.url`
+    branch=`git branch | grep -oP "\* \K.+"`
     echo "git clone $url -b $branch"
+    cd -
 done
