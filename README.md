@@ -5,6 +5,6 @@ Mostly it's just for fun.
 
 Some scripts can come in handy.
 
-Zhu Li<br/>
-2018.7.5 21:48<br/>
-Beijing, China<br/>
+Besides I also decide to take some conf files with me, so that every time I get a new machine I can set them up faster.
+
+Zhu Li
