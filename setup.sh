@@ -24,6 +24,6 @@ for f in `ls`; do
     if [[ $CP_OVERWRITE == true ]]; then
         rm -rf ~/.${f}
     fi
-    cp $cp_opts $f ~/.${f}
+    cp -r $f ~/.${f}
 done
 cd ..
