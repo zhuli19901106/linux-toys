@@ -1,9 +1,11 @@
 #!/usr/bin/bash
 
 ln_opts='-s'
+cp_opts='-rn'
 for arg in $@; do
     if [[ $arg == '-f' ]]; then
         ln_opts='-sf'
+        cp_opts='-rf'
     fi
 done
 
@@ -13,6 +15,7 @@ cd $cur_dir
 ln $ln_opts `readlink -f bin` -t ~/
 cd dot-conf
 for f in `ls`; do
-    ln $ln_opts `readlink -f $f` ~/.${f}
+    echo "Copying conf file \"$f\" to \"~/.$f\""
+    cp $cp_opts $f ~/.${f}
 done
 cd ..
