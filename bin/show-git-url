@@ -13,5 +13,5 @@ for repo in $@; do
     echo "# $repo"
     url=$(grep -oP -m 1 "url = \K[^\s]+" ${repo}/.git/config)
     branch=$(grep -oP -m 1 "\[branch \"\K([^\"]+)" ${repo}/.git/config)
-    echo "git clone $url $branch"
+    echo "git clone $url -b $branch"
 done
