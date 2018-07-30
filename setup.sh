@@ -16,6 +16,9 @@ if [[ $CP_OVERWRITE == true ]]; then
     rm -rf ~/bin
 fi
 echo "Copying conf file \"bin\" to \"~/bin\""
+if [[ $CP_OVERWRITE == true ]]; then
+    rm -rf ~/bin
+fi
 cp -r bin ~/bin
 
 cd dot-conf
