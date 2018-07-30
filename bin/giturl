@@ -15,5 +15,5 @@ for repo in $@; do
     url=`git config --get remote.origin.url`
     branch=`git branch | grep -oP "\* \K.+"`
     echo "git clone $url -b $branch"
-    cd -
+    cd ..
 done
