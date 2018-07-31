@@ -27,6 +27,7 @@ alias gitcl='git clone'
 alias gitco='git checkout'
 alias gitpl='git pull'
 alias gitps='git push'
+alias gitst='git status'
 
 gp() 
 {
