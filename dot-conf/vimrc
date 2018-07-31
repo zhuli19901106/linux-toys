@@ -33,6 +33,8 @@ set showmatch
 set pastetoggle=<F9>
 " set relativenumber
 set cursorline
+set hlsearch
+set ruler
 
 " zhuli1@4paradigm.com BEGIN
 " set cursorline
