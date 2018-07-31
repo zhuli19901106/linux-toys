@@ -1,0 +1,30 @@
+source /opt/rh/devtoolset-7/enable
+export JDK_HOME=/usr/lib/jvm/jdk1.8.0_171
+export JRE_HOME=$JDK_HOME/jre
+export JAVA_HOME=$JDK_HOME
+export PATH=$JAVA_HOME/bin:$PATH
+export JAVA_OPTS='-Xmx4g -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics'
+
+export CUDA_HOME=/usr/local/cuda-9.0
+export PATH=$CUDA_HOME/bin:$PATH
+if [[ -z "$LD_LIBRARY_PATH" ]]; then
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64
+else
+    export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
+fi
+export CUDA_VISIBLE_DEVICES=0,1
+
+export HADOOP_HOME=/usr/local/hadoop-2.7.1
+export PATH=$HADOOP_HOME/bin:$PATH
+
+export SPARK_HOME=/usr/local/spark-2.3.0-bin-hadoop2.7
+export PATH=$SPARK_HOME/bin:$PATH
+
+export GRADLE_HOME=/usr/local/gradle-4.7
+export PATH=$GRADLE_HOME/bin:$PATH
+
+export SCALA_HOME=/usr/local/scala-2.11.7
+export PATH=$SCALA_HOME/bin:$PATH
+
+export MAVEN_HOME=/usr/local/maven-3.5.4
+export PATH=$MAVEN_HOME/bin:$PATH
