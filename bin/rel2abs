@@ -1,0 +1,30 @@
+#!/usr/bin/python3
+import re
+import os
+import sys
+
+if __name__ == '__main__':
+    if len(sys.argv) <= 1:
+        print('Please specify a python module name.')
+        exit(0)
+    path = sys.argv[1]
+    module_name = os.path.basename(path)
+    os.chdir(os.path.dirname(path))
+    pat = re.compile(r'^.+\.py$')
+    sed_pats = [
+        r'"s/from \.(\w+)/from {}.\1/g"',
+        r'"s/from \. /from {} /g"',
+        r'"s/import \.(\w+)/import {}.\1/g"',
+    ]
+    for sed_pat in sed_pats:
+        for root, dir_names, file_names in os.walk(module_name):
+            for file_name in file_names:
+                if not pat.match(file_name):
+                    continue
+                full_path = '{}/{}'.format(root, file_name)
+                #print(full_path)
+                module_path = re.sub('/', '.', root)
+                #print(module_path)
+                cmd = 'sed -i -r {} {}'.format(sed_pat.format(module_path), full_path)
+                print(cmd)
+                os.system(cmd)

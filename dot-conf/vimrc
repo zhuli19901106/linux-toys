@@ -46,5 +46,6 @@ imap <C-x> <Esc>:q<CR>i<Right>
 map <C-x> <Esc>:q<CR>
 set backspace=indent,eol,start
 imap <C-D> <Esc>yypi<Right>
+map <F2> @:
 " zhuli1@4paradigm.com END
 
