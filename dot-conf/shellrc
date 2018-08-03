@@ -23,11 +23,13 @@ alias mvn-install='mvn install -DskipTests -Dwagon.skip=true'
 
 alias tmux='tmux -2'
 
-alias gitcl='git clone'
-alias gitco='git checkout'
-alias gitpl='git pull'
-alias gitps='git push'
-alias gitst='git status'
+alias gtc='git clone'
+alias gto='git checkout'
+alias gtpl='git pull'
+alias gtps='git push'
+alias gts='git status'
+alias gtw='git show'
+alias gtl='git log'
 
 gp() 
 {
