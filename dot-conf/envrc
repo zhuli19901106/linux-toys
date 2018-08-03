@@ -3,7 +3,7 @@ export JDK_HOME=/usr/lib/jvm/jdk1.8.0_171
 export JRE_HOME=$JDK_HOME/jre
 export JAVA_HOME=$JDK_HOME
 export PATH=$JAVA_HOME/bin:$PATH
-export JAVA_OPTS='-Xmx4g -XX:NativeMemoryTracking=detail -XX:+UnlockDiagnosticVMOptions -XX:+PrintNMTStatistics'
+export JAVA_OPTS='-Xmx4g'
 
 export CUDA_HOME=/usr/local/cuda-9.0
 export PATH=$CUDA_HOME/bin:$PATH
@@ -28,3 +28,6 @@ export PATH=$SCALA_HOME/bin:$PATH
 
 export MAVEN_HOME=/usr/local/maven-3.5.4
 export PATH=$MAVEN_HOME/bin:$PATH
+
+export TTYJS_HOME=~/git-repos/tty.js
+export PATH=$TTYJS_HOME/bin:$PATH
