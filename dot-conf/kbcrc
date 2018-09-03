@@ -19,10 +19,12 @@ function kbpods() {
 function kbpod() {
     if [ $# -eq 0 ]; then
         namespace=default
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     elif [ $# -eq 1 ]; then
         namespace=$1
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     else
         namespace=$1
         service_name=$2
@@ -35,10 +37,12 @@ function kbpod() {
 function kbexec() {
     if [ $# -eq 0 ]; then
         namespace=default
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     elif [ $# -eq 1 ]; then
         namespace=$1
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     else
         namespace=$1
         service_name=$2
@@ -52,16 +56,35 @@ function kbexec() {
 function kbyaml() {
     if [ $# -eq 0 ]; then
         namespace=default
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     elif [ $# -eq 1 ]; then
         namespace=$1
-        service_name=$DEFAULT_SERVICE
+        kbpods $namespace
+        return
     else
         namespace=$1
         service_name=$2
     fi
 
     kubectl -n $namespace get deploy $service_name -o yaml
+}
+
+function kbedit() {
+    if [ $# -eq 0 ]; then
+        namespace=default
+        kbpods $namespace
+        return
+    elif [ $# -eq 1 ]; then
+        namespace=$1
+        kbpods $namespace
+        return
+    else
+        namespace=$1
+        service_name=$2
+    fi
+
+    kubectl -n $namespace edit deployment $service_name
 }
 
 # zhuli@4paradigm.com END
