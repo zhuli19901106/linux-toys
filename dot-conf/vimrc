@@ -36,6 +36,15 @@ set cursorline
 set hlsearch
 set ruler
 
+set rtp+=~/.vim/bundle/YouCompleteMe
+let g:ycm_auto_trigger=1
+let g:ycm_min_num_of_chars_for_completion=2
+" let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
+let g:ycm_filetype_whitelist={'*': 1}
+let g:ycm_filetype_blacklist={'*': 0}
+let g:ycm_complete_in_comments=1
+let g:ycm_complete_in_strings=1
+
 " zhuli1@4paradigm.com BEGIN
 " set cursorline
 map <F2> :echo 'Hello world.'<CR>

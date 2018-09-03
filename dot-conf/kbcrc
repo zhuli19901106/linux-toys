@@ -1,0 +1,67 @@
+# zhuli@4paradigm.com BEGIN
+
+function kbpods() {
+    if [ $# -lt 1 ]; then
+        namespace=default
+    else
+        namespace=$1
+    fi
+
+    if [ $# -lt 2 ]; then
+        kubectl -n $namespace get pods
+    else
+        service_name=$2
+        kubectl -n $namespace get pods | head -n 1
+        kubectl -n $namespace get pods | grep $service_name
+    fi
+}
+
+function kbpod() {
+    if [ $# -eq 0 ]; then
+        namespace=default
+        service_name=$DEFAULT_SERVICE
+    elif [ $# -eq 1 ]; then
+        namespace=$1
+        service_name=$DEFAULT_SERVICE
+    else
+        namespace=$1
+        service_name=$2
+    fi
+
+    pod_name=`kbpods $namespace | grep $service_name | awk -F" " '{print $1}'`
+    echo $pod_name
+}
+
+function kbexec() {
+    if [ $# -eq 0 ]; then
+        namespace=default
+        service_name=$DEFAULT_SERVICE
+    elif [ $# -eq 1 ]; then
+        namespace=$1
+        service_name=$DEFAULT_SERVICE
+    else
+        namespace=$1
+        service_name=$2
+    fi
+
+    pod_name=`kbpod $namespace $service_name`
+    echo $pod_name
+    kubectl -n $namespace exec -it $pod_name -- env COLUMNS=$COLUMNS LINES=$LINES bash
+}
+
+function kbyaml() {
+    if [ $# -eq 0 ]; then
+        namespace=default
+        service_name=$DEFAULT_SERVICE
+    elif [ $# -eq 1 ]; then
+        namespace=$1
+        service_name=$DEFAULT_SERVICE
+    else
+        namespace=$1
+        service_name=$2
+    fi
+
+    kubectl -n $namespace get deploy $service_name -o yaml
+}
+
+# zhuli@4paradigm.com END
