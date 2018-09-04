@@ -21,6 +21,8 @@ class Keys(Enum):
     Wide      = '-w'
     List      = '-l'
     Yaml      = '-y'
+    Edit      = '-e'
+    Command   = '-c'
 
 class Args(Enum):
     Namespace = 'n'
@@ -28,6 +30,8 @@ class Args(Enum):
     Wide      = 'w'
     List      = 'l'
     Yaml      = 'y'
+    Edit      = 'e'
+    Command   = 'c'
 
 def filter_dict(d):
     d1 = {}
@@ -39,13 +43,24 @@ def filter_dict(d):
             d1[k] = v
     return d1
 
+def get_termsize():
+    output = shell_exec('tput lines')
+    lines = int(output[0])
+    output = shell_exec('tput cols')
+    columns = int(output[0])
+    return lines, columns
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Kubectl utility arguments.")
+    LINES, COLUMNS = get_termsize()
+
+    parser = argparse.ArgumentParser(description="Kubectl utility program.")
     parser.add_argument(Keys.Namespace.value, help="namespace", required=False)
-    parser.add_argument(Keys.Service.value, help="service", required=False)
-    parser.add_argument(Keys.Wide.value, help="wide", required=False, action='store_true')
-    parser.add_argument(Keys.List.value, help="list", required=False, action='store_true')
-    parser.add_argument(Keys.Yaml.value, help="yaml", required=False, action='store_true')
+    parser.add_argument(Keys.Service.value, help="service name", required=False)
+    parser.add_argument(Keys.Wide.value, help="show node info", required=False, action='store_true')
+    parser.add_argument(Keys.List.value, help="list namespaces", required=False, action='store_true')
+    parser.add_argument(Keys.Yaml.value, help="show yaml configuration", required=False, action='store_true')
+    parser.add_argument(Keys.Edit.value, help="edit yaml configuration", required=False, action='store_true')
+    parser.add_argument(Keys.Command.value, help="print command without executing", required=False, action='store_true')
     args, extra_args = parser.parse_known_args()
     args_dict = filter_dict(vars(args))
 
@@ -56,6 +71,7 @@ if __name__ == '__main__':
 
     is_wide = Args.Wide.value in args_dict
 
+    is_interactive = False
     if not Args.Service.value in args_dict:
         if not Args.List.value in args_dict:
             cmd = 'kubectl -n {} get pods'.format(ns)
@@ -67,12 +83,19 @@ if __name__ == '__main__':
         service = args_dict[Args.Service.value]
         if not Args.Yaml.value in args_dict:
             pod = get_podname(ns, service)
-            cmd = 'kubectl -n {} exec -it {} -- env COLUMNS=$COLUMNS LINES=$LINES bash'.format(ns, pod)
-            os.system(cmd)
-            exit()
-        elif not Args.Yaml.value in args_dict:
+            cmd = 'kubectl -n {} exec -it {} -- env COLUMNS={} LINES={} bash'.format(ns, pod, COLUMNS, LINES)
+            is_interactive = True
+        elif not Args.Edit.value in args_dict:
             cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, service)
+        else:
+            cmd = 'kubectl -n {} edit deploy {}'.format(ns, service)
+            is_interactive = True
     print(cmd)
-    output = shell_exec(cmd)
-    print('\n'.join(output))
+    if Args.Command.value in args_dict:
+        exit()
+    if is_interactive:
+        os.system(cmd)
+    else:
+        output = shell_exec(cmd)
+        print('\n'.join(output))
 
