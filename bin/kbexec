@@ -1,4 +1,15 @@
 #!/usr/bin/env python3
+# This is a utility script by Zhu Li (zhuli19901106).
+# It's written because typing kubectl commands can be really tedious sometimes.
+# It works by calling popen() and system(). Shell commands are called and outputs are piped.
+# Currently it can help type a bit less for the following things:
+### get namespaces
+### get pods
+### enter pods and run bash
+### get pod configuration as yaml file
+### edit pod configuration as yaml file
+### show commands without running them
+
 import argparse
 import os
 import sys
