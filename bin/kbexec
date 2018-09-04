@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+import argparse
+import os
+import sys
+from enum import Enum
+
+def shell_exec(cmd):
+    with os.popen(cmd) as f:
+        s = f.read()
+        a = s.strip().split('\n')
+    return a
+
+def get_podname(ns, service):
+    cmd = """kubectl -n {} get pods | grep {} | awk -F" " '{{print $1}}'""".format(ns, service)
+    output = shell_exec(cmd)
+    return output[0]
+
+class Keys(Enum):
+    Namespace = '-n'
+    Service   = '-s'
+    Wide      = '-w'
+    List      = '-l'
+    Yaml      = '-y'
+
+class Args(Enum):
+    Namespace = 'n'
+    Service   = 's'
+    Wide      = 'w'
+    List      = 'l'
+    Yaml      = 'y'
+
+def filter_dict(d):
+    d1 = {}
+    for k in d:
+        v = d[k]
+        if v is None or not v:
+            continue
+        else:
+            d1[k] = v
+    return d1
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Kubectl utility arguments.")
+    parser.add_argument(Keys.Namespace.value, help="namespace", required=False)
+    parser.add_argument(Keys.Service.value, help="service", required=False)
+    parser.add_argument(Keys.Wide.value, help="wide", required=False, action='store_true')
+    parser.add_argument(Keys.List.value, help="list", required=False, action='store_true')
+    parser.add_argument(Keys.Yaml.value, help="yaml", required=False, action='store_true')
+    args, extra_args = parser.parse_known_args()
+    args_dict = filter_dict(vars(args))
+
+    if not Args.Namespace.value in args_dict:
+        ns = 'default'
+    else:
+        ns = args_dict[Args.Namespace.value]
+
+    is_wide = Args.Wide.value in args_dict
+
+    if not Args.Service.value in args_dict:
+        if not Args.List.value in args_dict:
+            cmd = 'kubectl -n {} get pods'.format(ns)
+            if is_wide:
+                cmd += ' -o wide'
+        else:
+            cmd = 'kubectl get ns'
+    else:
+        service = args_dict[Args.Service.value]
+        if not Args.Yaml.value in args_dict:
+            pod = get_podname(ns, service)
+            cmd = 'kubectl -n {} exec -it {} -- env COLUMNS=$COLUMNS LINES=$LINES bash'.format(ns, pod)
+            os.system(cmd)
+            exit()
+        elif not Args.Yaml.value in args_dict:
+            cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, service)
+    print(cmd)
+    output = shell_exec(cmd)
+    print('\n'.join(output))
+
