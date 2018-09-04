@@ -28,18 +28,18 @@ def get_podname(ns, service):
 
 class Keys(Enum):
     Namespace = '-n'
+    Get       = '-g'
     Service   = '-s'
     Wide      = '-w'
-    List      = '-l'
     Yaml      = '-y'
     Edit      = '-e'
     Command   = '-c'
 
 class Args(Enum):
     Namespace = 'n'
+    Get       = 'g'
     Service   = 's'
     Wide      = 'w'
-    List      = 'l'
     Yaml      = 'y'
     Edit      = 'e'
     Command   = 'c'
@@ -66,9 +66,9 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="Kubectl utility program.")
     parser.add_argument(Keys.Namespace.value, help="namespace", required=False)
+    parser.add_argument(Keys.Get.value, help="get info", required=False)
     parser.add_argument(Keys.Service.value, help="service name", required=False)
     parser.add_argument(Keys.Wide.value, help="show node info", required=False, action='store_true')
-    parser.add_argument(Keys.List.value, help="list namespaces", required=False, action='store_true')
     parser.add_argument(Keys.Yaml.value, help="show yaml configuration", required=False, action='store_true')
     parser.add_argument(Keys.Edit.value, help="edit yaml configuration", required=False, action='store_true')
     parser.add_argument(Keys.Command.value, help="print command without executing", required=False, action='store_true')
@@ -83,24 +83,41 @@ if __name__ == '__main__':
     is_wide = Args.Wide.value in args_dict
 
     is_interactive = False
-    if not Args.Service.value in args_dict:
-        if not Args.List.value in args_dict:
-            cmd = 'kubectl -n {} get pods'.format(ns)
+    
+    while True:
+        if len(args_dict) == 0:
+            cmd = 'kubectl get ns'
+            break
+        if Args.Get.value in args_dict:
+            get = args_dict[Args.Get.value]
+            if get == 'p':
+                cmd = 'kubectl -n {} get pods'.format(ns)
+            elif get == 'n':
+                cmd = 'kubectl -n {} get nodes'.format(ns)
+            elif get == 'r':
+                cmd = 'kubectl -n {} get rs'.format(ns)
+            else:
+                cmd = 'kubectl -n {} get pods'.format(ns)
             if is_wide:
                 cmd += ' -o wide'
+            break
+        if not Args.Service.value in args_dict:
+            if not Args.List.value in args_dict:
+                cmd = 'kubectl -n {} get pods'.format(ns)
+                if is_wide:
+                    cmd += ' -o wide'
         else:
-            cmd = 'kubectl get ns'
-    else:
-        service = args_dict[Args.Service.value]
-        if not Args.Yaml.value in args_dict:
-            pod = get_podname(ns, service)
-            cmd = 'kubectl -n {} exec -it {} -- env COLUMNS={} LINES={} bash'.format(ns, pod, COLUMNS, LINES)
-            is_interactive = True
-        elif not Args.Edit.value in args_dict:
-            cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, service)
-        else:
-            cmd = 'kubectl -n {} edit deploy {}'.format(ns, service)
-            is_interactive = True
+            service = args_dict[Args.Service.value]
+            if not Args.Yaml.value in args_dict:
+                pod = get_podname(ns, service)
+                cmd = 'kubectl -n {} exec -it {} -- env COLUMNS={} LINES={} bash'.format(ns, pod, COLUMNS, LINES)
+                is_interactive = True
+            elif not Args.Edit.value in args_dict:
+                cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, service)
+            else:
+                cmd = 'kubectl -n {} edit deploy {}'.format(ns, service)
+                is_interactive = True
+        break
     print(cmd)
     if Args.Command.value in args_dict:
         exit()
