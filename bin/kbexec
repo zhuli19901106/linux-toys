@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # This is a utility script by Zhu Li (zhuli19901106).
 # It's written because typing kubectl commands can be really tedious sometimes.
 # It works by calling popen() and system(). Shell commands are called and outputs are piped.
@@ -20,6 +20,9 @@ def shell_exec(cmd):
         s = f.read()
         a = s.strip().split('\n')
     return a
+
+def rtrim(s, d, n):
+    return d.join(s.split(d)[: -n])
 
 def get_podname(ns, service):
     cmd = """kubectl -n {} get pods | grep {} | awk -F" " '{{print $1}}'""".format(ns, service)
@@ -111,11 +114,13 @@ if __name__ == '__main__':
         else:
             service = args_dict[Args.Service.value]
             if Args.Yaml.value in args_dict:
+                pod = get_podname(ns, service)
+                deploy = rtrim(pod, '-', 2)
                 if Args.Edit.value in args_dict:
-                    cmd = 'kubectl -n {} edit deploy {}'.format(ns, service)
+                    cmd = 'kubectl -n {} edit deploy {}'.format(ns, deploy)
                     is_interactive = True
                 else:
-                    cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, service)
+                    cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, deploy)
             elif Args.Log.value in args_dict:
                 pod = get_podname(ns, service)
                 cmd = 'kubectl -n {} logs -f {} app'.format(ns, pod)
