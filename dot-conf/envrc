@@ -19,6 +19,7 @@ export PATH=$HADOOP_HOME/bin:$PATH
 
 export SPARK_HOME=/usr/local/spark-2.3.0-bin-hadoop2.7
 export PATH=$SPARK_HOME/bin:$PATH
+export PYSPARK_SUBMIT_ARGS="--master local[2] pyspark-shell"
 
 export GRADLE_HOME=/usr/local/gradle-4.7
 export PATH=$GRADLE_HOME/bin:$PATH
@@ -31,3 +32,6 @@ export PATH=$MAVEN_HOME/bin:$PATH
 
 export TTYJS_HOME=~/git-repos/tty.js
 export PATH=$TTYJS_HOME/bin:$PATH
+
+export CONDA_HOME=/opt/miniconda3
+export PATH=$CONDA_HOME/bin:$PATH

@@ -76,3 +76,12 @@ kp()
     fi
 }
 export -f kp
+
+mg()
+{
+    if [ $# -lt 2 ]; then
+        return
+    fi
+    diff -u $1 $2 | patch $2
+}
+export -f mg
