@@ -13,7 +13,6 @@
 import argparse
 import os
 import sys
-from enum import Enum
 
 def shell_exec(cmd):
     with os.popen(cmd) as f:
@@ -29,6 +28,7 @@ def get_podname(ns, service):
     output = shell_exec(cmd)
     return output[0]
 
+'''
 class Keys(Enum):
     Namespace = '-n'
     Get       = '-g'
@@ -48,6 +48,7 @@ class Args(Enum):
     Edit      = 'e'
     Command   = 'c'
     Log       = 'l'
+'''
 
 def filter_dict(d):
     d1 = {}
@@ -70,23 +71,23 @@ if __name__ == '__main__':
     LINES, COLUMNS = get_termsize()
 
     parser = argparse.ArgumentParser(description="Kubectl utility program.")
-    parser.add_argument(Keys.Namespace.value, help="namespace", required=False)
-    parser.add_argument(Keys.Get.value, help="get info", required=False)
-    parser.add_argument(Keys.Service.value, help="service name", required=False)
-    parser.add_argument(Keys.Wide.value, help="show node info", required=False, action='store_true')
-    parser.add_argument(Keys.Yaml.value, help="show yaml configuration", required=False, action='store_true')
-    parser.add_argument(Keys.Edit.value, help="edit yaml configuration", required=False, action='store_true')
-    parser.add_argument(Keys.Command.value, help="print command without executing", required=False, action='store_true')
-    parser.add_argument(Keys.Log.value, help="print pod logs", required=False, action='store_true')
+    parser.add_argument('-n', help="namespace", required=False)
+    parser.add_argument('-g', help="get info", required=False)
+    parser.add_argument('-s', help="service name", required=False)
+    parser.add_argument('-w', help="show node info", required=False, action='store_true')
+    parser.add_argument('-y', help="show yaml configuration", required=False, action='store_true')
+    parser.add_argument('-e', help="edit yaml configuration", required=False, action='store_true')
+    parser.add_argument('-c', help="print command without executing", required=False, action='store_true')
+    parser.add_argument('-l', help="print pod logs", required=False, action='store_true')
     args, extra_args = parser.parse_known_args()
     args_dict = filter_dict(vars(args))
 
-    if not Args.Namespace.value in args_dict:
+    if not 'n' in args_dict:
         ns = 'default'
     else:
-        ns = args_dict[Args.Namespace.value]
+        ns = args_dict['n']
 
-    is_wide = Args.Wide.value in args_dict
+    is_wide = 'w' in args_dict
 
     is_interactive = False
     
@@ -94,8 +95,8 @@ if __name__ == '__main__':
         if len(args_dict) == 0:
             cmd = 'kubectl get ns'
             break
-        if Args.Get.value in args_dict:
-            get = args_dict[Args.Get.value]
+        if 'g' in args_dict:
+            get = args_dict['g']
             if get == 'p':
                 cmd = 'kubectl -n {} get pods'.format(ns)
             elif get == 'n':
@@ -107,21 +108,21 @@ if __name__ == '__main__':
             if is_wide:
                 cmd += ' -o wide'
             break
-        if not Args.Service.value in args_dict:
+        if not 's' in args_dict:
             cmd = 'kubectl -n {} get pods'.format(ns)
             if is_wide:
                 cmd += ' -o wide'
         else:
-            service = args_dict[Args.Service.value]
-            if Args.Yaml.value in args_dict:
+            service = args_dict['s']
+            if 'y' in args_dict:
                 pod = get_podname(ns, service)
                 deploy = rtrim(pod, '-', 2)
-                if Args.Edit.value in args_dict:
+                if 'e' in args_dict:
                     cmd = 'kubectl -n {} edit deploy {}'.format(ns, deploy)
                     is_interactive = True
                 else:
                     cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, deploy)
-            elif Args.Log.value in args_dict:
+            elif 'l' in args_dict:
                 pod = get_podname(ns, service)
                 cmd = 'kubectl -n {} logs -f {} app'.format(ns, pod)
                 is_interactive = True
@@ -131,7 +132,7 @@ if __name__ == '__main__':
                 is_interactive = True
         break
     print(cmd)
-    if Args.Command.value in args_dict:
+    if 'c' in args_dict:
         exit()
     if is_interactive:
         os.system(cmd)
