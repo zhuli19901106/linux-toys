@@ -45,6 +45,7 @@ gp()
         vi $f
     fi
 }
+export -f gp
 
 fd()
 {
@@ -60,3 +61,18 @@ fd()
         vi $f[@]
     fi
 }
+export -f fd
+
+kp()
+{
+    if [ $# -lt 1 ]; then
+        return
+    fi
+    procs=`ps aux | grep "$1" | grep -v 'grep' | awk '{print $2}'`
+    if [[ ! -z $procs ]]; then
+        echo $procs | xargs kill -9
+    else
+        echo "No process with keyword \"$1\" is found."
+    fi
+}
+export -f kp

@@ -12,6 +12,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 source /usr/share/bash-completion/completions/docker
 source /etc/bash_completion.d/git
+source /usr/share/bash-completion/completions/tmux
 source <(kubectl completion bash)
 
 source ~/.shellrc
@@ -22,3 +23,5 @@ parse_git_branch() {
 }
 
 export PS1='\[\033[38;5;87m\]\u\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;119m\]\h\[$(tput sgr0)\]\[\033[38;5;15m\] [\[$(tput sgr0)\]\[\033[38;5;198m\]\t\[$(tput sgr0)\]\[\033[38;5;15m\]] {\[$(tput sgr0)\]\[\033[38;5;81m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]}$(parse_git_branch)\n\[$(tput sgr0)\]\[\033[38;5;2m\]--\[$(tput sgr0)\]\[\033[38;5;118m\]>\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]'
+
+export HISTCONTROL=ignoreboth:erasedups
