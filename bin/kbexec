@@ -1,0 +1,142 @@
+#!/usr/bin/env python
+# This is a utility script by Zhu Li (zhuli19901106).
+# It's written because typing kubectl commands can be really tedious sometimes.
+# It works by calling popen() and system(). Shell commands are called and outputs are piped.
+# Currently it can help type a bit less for the following things:
+### get namespaces
+### get pods
+### enter pods and run bash
+### get pod configuration as yaml file
+### edit pod configuration as yaml file
+### show commands without running them
+
+import argparse
+import os
+import sys
+
+def shell_exec(cmd):
+    with os.popen(cmd) as f:
+        s = f.read()
+        a = s.strip().split('\n')
+    return a
+
+def rtrim(s, d, n):
+    return d.join(s.split(d)[: -n])
+
+def get_podname(ns, service):
+    cmd = """kubectl -n {} get pods | grep {} | awk -F" " '{{print $1}}'""".format(ns, service)
+    output = shell_exec(cmd)
+    return output[0]
+
+'''
+class Keys(Enum):
+    Namespace = '-n'
+    Get       = '-g'
+    Service   = '-s'
+    Wide      = '-w'
+    Yaml      = '-y'
+    Edit      = '-e'
+    Command   = '-c'
+    Log       = '-l'
+
+class Args(Enum):
+    Namespace = 'n'
+    Get       = 'g'
+    Service   = 's'
+    Wide      = 'w'
+    Yaml      = 'y'
+    Edit      = 'e'
+    Command   = 'c'
+    Log       = 'l'
+'''
+
+def filter_dict(d):
+    d1 = {}
+    for k in d:
+        v = d[k]
+        if v is None or not v:
+            continue
+        else:
+            d1[k] = v
+    return d1
+
+def get_termsize():
+    output = shell_exec('tput lines')
+    lines = int(output[0])
+    output = shell_exec('tput cols')
+    columns = int(output[0])
+    return lines, columns
+
+if __name__ == '__main__':
+    LINES, COLUMNS = get_termsize()
+
+    parser = argparse.ArgumentParser(description="Kubectl utility program.")
+    parser.add_argument('-n', help="namespace", required=False)
+    parser.add_argument('-g', help="get info", required=False)
+    parser.add_argument('-s', help="service name", required=False)
+    parser.add_argument('-w', help="show node info", required=False, action='store_true')
+    parser.add_argument('-y', help="show yaml configuration", required=False, action='store_true')
+    parser.add_argument('-e', help="edit yaml configuration", required=False, action='store_true')
+    parser.add_argument('-c', help="print command without executing", required=False, action='store_true')
+    parser.add_argument('-l', help="print pod logs", required=False, action='store_true')
+    args, extra_args = parser.parse_known_args()
+    args_dict = filter_dict(vars(args))
+
+    if not 'n' in args_dict:
+        ns = 'default'
+    else:
+        ns = args_dict['n']
+
+    is_wide = 'w' in args_dict
+
+    is_interactive = False
+    
+    while True:
+        if len(args_dict) == 0:
+            cmd = 'kubectl get ns'
+            break
+        if 'g' in args_dict:
+            get = args_dict['g']
+            if get == 'p':
+                cmd = 'kubectl -n {} get pods'.format(ns)
+            elif get == 'n':
+                cmd = 'kubectl -n {} get nodes'.format(ns)
+            elif get == 'r':
+                cmd = 'kubectl -n {} get rs'.format(ns)
+            else:
+                cmd = 'kubectl -n {} get pods'.format(ns)
+            if is_wide:
+                cmd += ' -o wide'
+            break
+        if not 's' in args_dict:
+            cmd = 'kubectl -n {} get pods'.format(ns)
+            if is_wide:
+                cmd += ' -o wide'
+        else:
+            service = args_dict['s']
+            if 'y' in args_dict:
+                pod = get_podname(ns, service)
+                deploy = rtrim(pod, '-', 2)
+                if 'e' in args_dict:
+                    cmd = 'kubectl -n {} edit deploy {}'.format(ns, deploy)
+                    is_interactive = True
+                else:
+                    cmd = 'kubectl -n {} get deploy {} -o yaml'.format(ns, deploy)
+            elif 'l' in args_dict:
+                pod = get_podname(ns, service)
+                cmd = 'kubectl -n {} logs -f {} app'.format(ns, pod)
+                is_interactive = True
+            else:
+                pod = get_podname(ns, service)
+                cmd = 'kubectl -n {} exec -it {} -- env COLUMNS={} LINES={} bash'.format(ns, pod, COLUMNS, LINES)
+                is_interactive = True
+        break
+    print(cmd)
+    if 'c' in args_dict:
+        exit()
+    if is_interactive:
+        os.system(cmd)
+    else:
+        output = shell_exec(cmd)
+        print('\n'.join(output))
+

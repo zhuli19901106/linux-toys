@@ -24,4 +24,7 @@ parse_git_branch() {
 
 export PS1='\[\033[38;5;87m\]\u\[$(tput bold)\]\[$(tput sgr0)\]\[\033[38;5;15m\]@\[$(tput sgr0)\]\[$(tput sgr0)\]\[\033[38;5;119m\]\h\[$(tput sgr0)\]\[\033[38;5;15m\] [\[$(tput sgr0)\]\[\033[38;5;198m\]\t\[$(tput sgr0)\]\[\033[38;5;15m\]] {\[$(tput sgr0)\]\[\033[38;5;81m\]\w\[$(tput sgr0)\]\[\033[38;5;15m\]}$(parse_git_branch)\n\[$(tput sgr0)\]\[\033[38;5;2m\]--\[$(tput sgr0)\]\[\033[38;5;118m\]>\[$(tput sgr0)\]\[\033[38;5;15m\]\\$ \[$(tput sgr0)\]'
 
+# added by Miniconda3 installer
+export PATH="/opt/miniconda3/bin:$PATH"
+
 export HISTCONTROL=ignoreboth:erasedups
