@@ -1,9 +1,14 @@
 source /opt/rh/devtoolset-7/enable
+
+export CONDA_HOME=/opt/miniconda3
+export PATH=$CONDA_HOME/bin:$PATH
+
 export JDK_HOME=/usr/lib/jvm/jdk1.8.0_171
 export JRE_HOME=$JDK_HOME/jre
 export JAVA_HOME=$JDK_HOME
 export PATH=$JAVA_HOME/bin:$PATH
 export JAVA_OPTS='-Xmx4g'
+export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib:$JAVA_HOME/jre/lib
 
 export CUDA_HOME=/usr/local/cuda-9.0
 export PATH=$CUDA_HOME/bin:$PATH
@@ -15,11 +20,20 @@ fi
 export CUDA_VISIBLE_DEVICES=0,1
 
 export HADOOP_HOME=/usr/local/hadoop-2.7.1
+export HADOOP_PREFIX=$HADOOP_HOME
+export HADOOP_PID_DIR=$HADOOP_HOME/pid
+export HADOOP_CONF_DIR=/etc/hadoop/conf
+export YARN_CONF_DIR=$HADOOP_CONF_DIR
 export PATH=$HADOOP_HOME/bin:$PATH
+export CLASSPATH=$CLASSPATH:$HADOOP_CONF_DIR
 
-export SPARK_HOME=/usr/local/spark-2.3.0-bin-hadoop2.7
+export SPARK_HOME=/usr/local/spark-2.3.1-bin-hadoop2.7
 export PATH=$SPARK_HOME/bin:$PATH
-export PYSPARK_SUBMIT_ARGS="--master local[2] pyspark-shell"
+export SPARK_CONF_DIR=$SPARK_HOME/conf
+export SPARK_OPTS="--master spark://m7-pce-gpu01:7077 -Dlog4j.logLevel=INFO"
+export PYSPARK_SUBMIT_ARGS="$SPARK_OPTS pyspark-shell"
+export PYSPARK_DRIVER_PYTHON=ipython3
+export CLASSPATH=$CLASSPATH:$SPARK_CONF_DIR
 
 export GRADLE_HOME=/usr/local/gradle-4.7
 export PATH=$GRADLE_HOME/bin:$PATH
@@ -33,5 +47,5 @@ export PATH=$MAVEN_HOME/bin:$PATH
 export TTYJS_HOME=~/git-repos/tty.js
 export PATH=$TTYJS_HOME/bin:$PATH
 
-export CONDA_HOME=/opt/miniconda3
-export PATH=$CONDA_HOME/bin:$PATH
+export HDFS_SHELL_HOME=/usr/local/hdfs-shell-1.0.7
+export PATH=$PATH:$HDFS_SHELL_HOME/bin
