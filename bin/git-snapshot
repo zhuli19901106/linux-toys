@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+if [ $# -lt 1 ]; then
+    echo 'Please specify a commit hash.'
+    exit
+fi
+commit_hash=$1
+git reset --hard $1 && git clean -dfx

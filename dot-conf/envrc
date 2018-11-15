@@ -30,7 +30,7 @@ export CLASSPATH=$CLASSPATH:$HADOOP_CONF_DIR
 export SPARK_HOME=/usr/local/spark-2.3.1-bin-hadoop2.7
 export PATH=$SPARK_HOME/bin:$PATH
 export SPARK_CONF_DIR=$SPARK_HOME/conf
-export SPARK_OPTS="--master spark://m7-pce-gpu01:7077 -Dlog4j.logLevel=INFO"
+export SPARK_OPTS="--master yarn -Dlog4j.logLevel=INFO"
 export PYSPARK_SUBMIT_ARGS="$SPARK_OPTS pyspark-shell"
 export PYSPARK_DRIVER_PYTHON=ipython3
 export CLASSPATH=$CLASSPATH:$SPARK_CONF_DIR
