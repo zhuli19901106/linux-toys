@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+import os
+import sys
+
+machines = [
+    # add your machine list here.
+    # format: "user1@hostname1", "user2@hostname2", ...
+    # don't forget to add public key before using it
+]
+
+def show_machines():
+    for idx, val in enumerate(machines):
+        print('%3d %s' % (idx + 1, val))
+
+def goto_machine(idx):
+    if idx < 1 or idx > len(machines):
+        print('Invalid index.')
+        return
+    os.system('ssh %s' % machines[idx - 1])
+
+def main():
+    if len(sys.argv) <= 1:
+        show_machines()
+        return
+    idx = int(sys.argv[1])
+    goto_machine(idx)
+
+if __name__ == '__main__':
+    main()
