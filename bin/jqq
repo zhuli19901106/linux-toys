@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ $# -lt 1 ]]; then
+    exit
+fi
+
+full_name=`readlink -f $1`
+if [[ ! -e $full_name ]]; then
+    echo "File not exists!"
+    exit
+fi
+
+dir_name=`dirname $full_name`
+base_name=`basename $full_name`
+tmp_file="$dir_name/.$base_name-`date +%s`"
+cat $full_name | jq . > $tmp_file
+cat $tmp_file > $full_name && rm $tmp_file
