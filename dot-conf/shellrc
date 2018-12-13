@@ -47,6 +47,23 @@ gp()
 }
 export -f gp
 
+gd()
+{
+    if [ $# -lt 1 ]; then
+        return
+    elif [ $# -eq 1 ]; then
+        keyword=$1
+        grep -Irn "$keyword" .
+    else
+        keyword=$1
+        n=$2
+        f=$(grep -Irn "$keyword" .)
+        cd `dirname $f`
+        readlink -f $f
+    fi
+}
+export -f gd
+
 fd()
 {
     if [ $# -lt 1 ]; then
