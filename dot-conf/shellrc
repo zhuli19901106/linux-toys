@@ -57,9 +57,9 @@ gd()
     else
         keyword=$1
         n=$2
-        f=$(grep -Irn "$keyword" .)
+        f=$(grep -Irn "$keyword" . | awk -F":" 'NR=='"$n"' {print $1}')
         cd `dirname $f`
-        readlink -f $f
+        readlink -f .
     fi
 }
 export -f gd
