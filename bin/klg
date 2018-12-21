@@ -54,9 +54,11 @@ def generate_command(args):
     if args['--namespace']:
         namespace = args['--namespace']
 
-    container = 'app'
     if args['--container']:
         container = args['--container']
+        container_opt = ' -c {}'.format(container)
+    else:
+        container_opt = ''
 
     category = 'po'
     pattern = args['--pod']
@@ -67,7 +69,7 @@ def generate_command(args):
     elif args['--no']:
         log_num = args['--no']
         log_opt = '--tail {}'.format(log_num)
-    cmd = '{} -n {} logs {} {} -c {}'.format(K_COMMAND, namespace, log_opt, item, container)
+    cmd = '{} -n {} logs {} {}{}'.format(K_COMMAND, namespace, log_opt, item, container_opt)
     is_interactive = True
     return cmd, is_interactive
 

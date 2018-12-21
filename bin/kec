@@ -54,9 +54,11 @@ def generate_command(args):
     if args['--namespace']:
         namespace = args['--namespace']
 
-    container = 'app'
     if args['--container']:
         container = args['--container']
+        container_opt = ' -c {}'.format(container)
+    else:
+        container_opt = ''
 
     category = 'po'
     pattern = args['--pod']
@@ -66,7 +68,7 @@ def generate_command(args):
         cmd = '{} -n {} describe {} {}'.format(K_COMMAND, namespace, category, item)
     else:
         exec_cmd = args['<cmd>'] if args['--cmd'] else 'bash'
-        cmd = '{} -n {} exec -it {} -c {} -- env COLUMNS={} LINES={} "{}"'.format(K_COMMAND, namespace, item, container, COLUMNS, LINES, exec_cmd)
+        cmd = '{} -n {} exec -it {}{} -- env COLUMNS={} LINES={} "{}"'.format(K_COMMAND, namespace, item, container_opt, COLUMNS, LINES, exec_cmd)
         is_interactive = True
     return cmd, is_interactive
 
