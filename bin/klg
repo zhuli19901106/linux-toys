@@ -6,7 +6,7 @@ Usage: klg -n <namespace> -p <pod> [-c <container>] [-f] [--no <number>] [-s]
 
   -n, --namespace <namespace>    assign namespace
   -p, --pod <pod pattern>        assign pod pattern
-  -c, --container <container>    assign container name [default: app]
+  -c, --container <container>    assign container name
   -f, --follow                   output log as they're appended
   -s, --show                     show kubectl command without executing
   --no <number>                  output last n lines of log

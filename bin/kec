@@ -4,9 +4,9 @@
 """
 Usage: kec -n <namespace> -p <pod> [-c <container>] [--cmd <cmd>] [--ds] [-s]
 
-  -n, --namespace <namespace>           assign namespace
+  -n, --namespace <namespace>    assign namespace
   -p, --pod <pod pattern>        assign pod pattern
-  -c, --container <container>    assign container name [default: app]
+  -c, --container <container>    assign container name
   -s, --show                     show kubectl command without executing
   --cmd                          shell command to be executed
   --ds                           describe pod
