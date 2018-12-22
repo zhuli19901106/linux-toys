@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage: kec -n <namespace> -p <pod> [-c <container>] [--cmd <cmd>] [--ds] [-s]
+Usage: kec [-n <namespace>] -p <pod> [-c <container>] [--cmd <cmd>] [--ds] [-s]
 
   -n, --namespace <namespace>    assign namespace
   -p, --pod <pod pattern>        assign pod pattern

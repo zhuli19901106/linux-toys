@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage: klg -n <namespace> -p <pod> [-c <container>] [-f] [--no <number>] [-s]
+Usage: klg [-n <namespace>] -p <pod> [-c <container>] [-f] [--no <number>] [-s]
 
   -n, --namespace <namespace>    assign namespace
   -p, --pod <pod pattern>        assign pod pattern

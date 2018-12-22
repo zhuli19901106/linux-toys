@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Usage: kis -n <namespace> [--ds] [-w] [-s]
-       kis -n <namespace> -p <pod> [-y] [-e] [--ds] [-w] [-s]
-       kis -n <namespace> -m <configmap> [-y] [-e] [--ds] [-w] [-s]
-       kis -n <namespace> -d <deploy> [-y] [-e] [--ds] [-w] [-s]
-       kis -n <namespace> -g <get> [--ds] [-w] [-s]
+Usage: kis [-n <namespace>] [--ds] [-w] [-s]
+       kis [-n <namespace>] -p <pod> [-y] [-e] [--ds] [-w] [-s]
+       kis [-n <namespace>] -m <configmap> [-y] [-e] [--ds] [-w] [-s]
+       kis [-n <namespace>] -d <deploy> [-y] [-e] [--ds] [-w] [-s]
+       kis [-n <namespace>] -g <get> [--ds] [-w] [-s]
 
   -n, --namespace <namespace>    assign namespace, can override p command
   -p, --pod <pod pattern>        assign pod piattern
