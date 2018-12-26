@@ -54,7 +54,7 @@ _kis()
             *)
                 ;;
         esac
-    elif [ $COMP_CWORD -ge 7 ]; then
+    elif [ $COMP_CWORD -eq 7 ]; then
         case "$p1" in
             "--edit"|"-e")
                 COMPREPLY=( $( compgen -W '--show' -- $p0) )
