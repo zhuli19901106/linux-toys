@@ -49,7 +49,7 @@ _klg()
                 COMPREPLY=( $( compgen -W '--show' -- $p0) )
                 ;;
             "--no")
-                COMPREPLY=( $( compgen -W '1234 567 89 10' -- $p0) )
+                COMPREPLY=( $( compgen -W '1234 567 89' -- $p0) )
                 ;;
             *)
                 ;;
