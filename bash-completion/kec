@@ -21,12 +21,18 @@ _kec()
         pods=$(k get po --no-headers -n $namespace | awk '{print $1}')
         COMPREPLY=( $( compgen -W '$pods' -- $p0) )
     elif [ $COMP_CWORD -eq 5 ]; then
-        COMPREPLY=( $( compgen -W '--container' -- $p0) )
+        COMPREPLY=( $( compgen -W '--container --show' -- $p0) )
     elif [ $COMP_CWORD -eq 6 ]; then
-        namespace=$p4
-        pod=$p2
-        containers=$(k get po $pod -n $namespace -o jsonpath='{.spec.containers[*].name}' | awk '{print $1}')
-        COMPREPLY=( $( compgen -W '$containers' -- $p0) )
+        case "$p1" in
+            "--container"|"-c")
+                namespace=$p4
+                pod=$p2
+                containers=$(k get po $pod -n $namespace -o jsonpath='{.spec.containers[*].name}' | awk '{print $1}')
+                COMPREPLY=( $( compgen -W '$containers' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
     elif [ $COMP_CWORD -eq 7 ]; then
         COMPREPLY=( $( compgen -W '--cmd --ds --show' -- $p0) )
     fi

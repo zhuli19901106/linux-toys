@@ -21,7 +21,7 @@ _klg()
         pods=$(k get po --no-headers -n $namespace | awk '{print $1}')
         COMPREPLY=( $( compgen -W '$pods' -- $p0) )
     elif [ $COMP_CWORD -eq 5 ]; then
-        COMPREPLY=( $( compgen -W '--container --follow --no --show' -- $p0) )
+        COMPREPLY=( $( compgen -W '--container --show' -- $p0) )
     elif [ $COMP_CWORD -eq 6 ]; then
         case "$p1" in
             "--container"|"-c")
