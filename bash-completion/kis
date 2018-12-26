@@ -1,0 +1,68 @@
+_kis()
+{
+    local p0
+    local p1
+    local p2
+    p0="${COMP_WORDS[COMP_CWORD]}"
+    p1="${COMP_WORDS[COMP_CWORD-1]}"
+    p2="${COMP_WORDS[COMP_CWORD-2]}"
+    
+    if [ $COMP_CWORD -eq 1 ]; then
+        COMPREPLY=( $( compgen -W '--namespace' -- $p0) )
+    elif [ $COMP_CWORD -eq 2 ]; then
+        namespaces=$(k get ns --no-headers | awk '{print $1}')
+        COMPREPLY=( $( compgen -W '$namespaces' -- $p0) )
+    elif [ $COMP_CWORD -eq 3 ]; then
+        COMPREPLY=( $( compgen -W '--pod --map --deploy --get --ds --wide --show' -- $p0) )
+    elif [ $COMP_CWORD -eq 4 ]; then
+        namespace=$p2
+        case "$p1" in
+            "--pod"|"-p")
+                pods=$(k get po --no-headers -n $namespace | awk '{print $1}')
+                COMPREPLY=( $(compgen -W "$pods" -- $p0) )
+                ;;
+            "--deploy"|"-d")
+                deploys=$(k get deploy --no-headers -n $namespace | awk '{print $1}')
+                COMPREPLY=( $(compgen -W "$deploys" -- $p0) )
+                ;;
+            "--map"|"-m")
+                maps=$(k get cm --no-headers -n $namespace | awk '{print $1}')
+                COMPREPLY=( $(compgen -W "$maps" -- $p0) )
+                ;;
+            "--get"|"-g")
+                COMPREPLY=( $(compgen -W 'certificatesigningrequests clusterrolebindings clusters cm componentstatuses configmaps controllerrevisions cronjobs cs csr daemonsets deploy deployments ds endpoints ep ev events horizontalpodautoscalers hpa hpa ing ingresses jobs namespaces netpol networkpolicies no nodes ns pdb persistentvolumeclaims persistentvolumes po poddisruptionbudgets pods podsecuritypolicies podtemplates pv pvc rc replicasets replicationcontrollers rolebindings rs sa secrets serviceaccounts services statefulsets statuses storageclasses svc thirdpartyresources' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -eq 5 ]; then
+        case "$p2" in
+            "--pod"|"-p"|"--deploy"|"-d"|"--map"|"-m")
+                COMPREPLY=( $( compgen -W '--yaml --ds --wide --show' -- $p0) )
+                ;;
+            "--get"|"-g")
+                COMPREPLY=( $( compgen -W '--ds --wide --show' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -eq 6 ]; then
+        case "$p1" in
+            "--yaml"|"-y")
+                COMPREPLY=( $( compgen -W '--edit --show' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -ge 7 ]; then
+        case "$p1" in
+            "--edit"|"-e")
+                COMPREPLY=( $( compgen -W '--show' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    fi
+}
+
+complete -o bashdefault -o default -o filenames -F _kis kis
