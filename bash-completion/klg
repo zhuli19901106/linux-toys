@@ -1,9 +1,11 @@
 _klg()
 {
     local p0
+    local p1
     local p2
     local p4
     p0="${COMP_WORDS[COMP_CWORD]}"
+    p1="${COMP_WORDS[COMP_CWORD-1]}"
     p2="${COMP_WORDS[COMP_CWORD-2]}"
     if [ $COMP_CWORD -ge 4 ]; then
         p4="${COMP_WORDS[COMP_CWORD-4]}"
