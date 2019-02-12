@@ -1,0 +1,68 @@
+_klg()
+{
+    local p0
+    local p1
+    local p2
+    local p4
+    p0="${COMP_WORDS[COMP_CWORD]}"
+    p1="${COMP_WORDS[COMP_CWORD-1]}"
+    p2="${COMP_WORDS[COMP_CWORD-2]}"
+    if [ $COMP_CWORD -ge 4 ]; then
+        p4="${COMP_WORDS[COMP_CWORD-4]}"
+    fi
+
+    if [ $COMP_CWORD -eq 1 ]; then
+        COMPREPLY=( $( compgen -W '--namespace' -- $p0) )
+    elif [ $COMP_CWORD -eq 2 ]; then
+        namespaces=$(k get ns --no-headers | awk '{print $1}')
+        COMPREPLY=( $( compgen -W '$namespaces' -- $p0) )
+    elif [ $COMP_CWORD -eq 3 ]; then
+        COMPREPLY=( $( compgen -W '--pod' -- $p0) )
+    elif [ $COMP_CWORD -eq 4 ]; then
+        namespace=$p2
+        pods=$(k get po --no-headers -n $namespace | awk '{print $1}')
+        COMPREPLY=( $( compgen -W '$pods' -- $p0) )
+    elif [ $COMP_CWORD -eq 5 ]; then
+        COMPREPLY=( $( compgen -W '--container --show' -- $p0) )
+    elif [ $COMP_CWORD -eq 6 ]; then
+        case "$p1" in
+            "--container"|"-c")
+                namespace=$p4
+                pod=$p2
+                containers=$(k get po $pod -n $namespace -o jsonpath='{.spec.containers[*].name}' | awk '{print $1}')
+                COMPREPLY=( $( compgen -W '$containers' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -eq 7 ]; then
+        case "$p2" in
+            "--container"|"-c")
+                COMPREPLY=( $( compgen -W '--follow --no --show' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -eq 8 ]; then
+        case "$p1" in
+            "--follow"|"-f")
+                COMPREPLY=( $( compgen -W '--show' -- $p0) )
+                ;;
+            "--no")
+                COMPREPLY=( $( compgen -W '1234 567 89' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    elif [ $COMP_CWORD -eq 9 ]; then
+        case "$p2" in
+            "--no")
+                COMPREPLY=( $( compgen -W '--show' -- $p0) )
+                ;;
+            *)
+                ;;
+        esac
+    fi
+}
+
+complete -o bashdefault -o default -o filenames -F _klg klg
