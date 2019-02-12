@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+function regex1()
+{
+    sudo awk 'match($0,/'$1'/, ary) {print ary['${2:-'1'}']}'
+}
+
+if [[ $EUID -ne 0 ]]; then
+    echo "Please run this script as root."
+    exit 1
+fi
+
+declare -a proxy
+declare -a fee_rate
+declare -a description
+proxy_list=()
+fee_rate_list=()
+description_list=()
+n=${#proxy_list[@]}
+
+service_name="I don't know."
+config_file="I don't know."
+prefix="I don't know."
+suffix="I don't know."
+origin_suffix="I don't know."
+current_proxy=`cat $config_file | grep "address" | regex1 "(${prefix})${suffix}"`
+current_server=${current_proxy}${origin_suffix}
+echo "Current proxy server is $current_server."
+
+if [[ $# -lt 1 ]]; then
+    for i in `seq 0 $((n - 1))`; do
+        printf '[%d] %s, %s, %s\n' "$i" "${proxy_list[$i]}" "${fee_rate_list[$i]}" "${description_list[$i]}"
+    done
+    exit
+fi
+
+proxy=${proxy_list[$1]}
+fee_rate=${fee_rate_list[$1]}
+if [ $current_proxy = $proxy ]; then
+    echo "Same proxy server."
+    exit 0
+fi
+
+sed -i -E "s/${prefix}${suffix}/${proxy}${suffix}/g" $config_file
+service $service_name stop
+service $service_name start
+
+echo "Switched to proxy server ${proxy}${origin_suffix} with a fee rate of ${fee_rate}."
+
