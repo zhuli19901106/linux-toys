@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+function myts() {
+    awk '{print strftime("[%Y-%m-%d %H:%M:%S.%]"), $0}'
+}
+
+if [ "$#" -ge 1 ]; then
+    pid=$1
+else
+    echo "Please specify PID for strace."
+    exit
+fi
+
+num_lines=${2:-1000}
+sys_calls=${3:-read,write,sendto,recvfrom,socket}
+log_file=${4:-./strace.log}
+
+echo "strace -e $sys_calls -s $num_lines -p $pid -ff  2>&1 | tee $log_file"
+strace -e $sys_calls -s $num_lines -p $pid -ff  2>&1 | tee $log_file
+
